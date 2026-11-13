@@ -2,29 +2,13 @@
 
 Sci-fi React components for game and immersive interfaces. Behaviour, keyboard support and accessibility come from [Base UI](https://base-ui.com).
 
-## Development
+## Install
 
 ```bash
-pnpm install
+npm install @monohud/react @monohud/css
 ```
 
-```bash
-pnpm dev
-```
-
-```bash
-pnpm test
-```
-
-```bash
-pnpm typecheck
-```
-
-```bash
-pnpm build
-```
-
-The demo runs at `http://127.0.0.1:5180`, with a playable bridge screen and a component catalog.
+Requires React 18 or 19.
 
 ## Usage
 
@@ -80,6 +64,30 @@ Base UI handles keyboard support and focus. The kit adds the visual layer on top
 - Your code decides how often `flash` and `alert` fire. Keep full-screen flashes under three per second, and offer a setting for `motion` and `distortion` in your game.
 - Tears make text briefly unreadable. Do not put the only copy of critical information behind a high `distortion`.
 
+## Development
+
+```bash
+pnpm install
+```
+
+```bash
+pnpm dev
+```
+
+```bash
+pnpm test
+```
+
+```bash
+pnpm typecheck
+```
+
+```bash
+pnpm build
+```
+
+The demo runs at `http://127.0.0.1:5180`, with a playable bridge screen and a component catalog.
+
 ## Packages
 
 | Package | Contents |
@@ -95,3 +103,7 @@ Base UI handles keyboard support and focus. The kit adds the visual layer on top
 - **HUD:** Frame, Panel, DecodeText, Readout, Status, Gauge, Radar, Waveform, LogStream, Reticle, GridBackground.
 - **Scene and volume:** Starfield, TacticalVolume, Hologram, Tape, Cockpit, Wing.
 - **Detail primitives:** Ruler, Hatch, Barcode, Tag, DataList.
+
+## License
+
+[MIT](LICENSE)
