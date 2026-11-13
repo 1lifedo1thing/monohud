@@ -1,0 +1,17 @@
+{
+  "name": "@monohud/tokens",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Joshua Guo",
+  "publishConfig": { "access": "public" },
+  "repository": { "type": "git", "url": "git+https://github.com/jshguo-labs/monohud.git", "directory": "packages/tokens" },
+  "homepage": "https://github.com/jshguo-labs/monohud#readme",
+  "bugs": "https://github.com/jshguo-labs/monohud/issues",
+  "type": "module",
+  "sideEffects": false,
+  "files": ["dist"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }, "./tokens.css": "./dist/tokens.css" },
+  "scripts": { "build": "tsdown src/index.ts --dts --format esm --out-dir dist --no-fixed-extension && node scripts/emit-css.mjs" }
+}

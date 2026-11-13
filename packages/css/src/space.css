@@ -1,0 +1,318 @@
+@layer mh.components {
+  /* Emission: anything lit carries its own bloom. Structure stays dark so the data reads first. */
+  .mh-readout__value,
+  .mh-gauge__value,
+  .mh-panel__title,
+  .mh-slider__value,
+  .mh-tape__value {
+    text-shadow: var(--mh-glow);
+  }
+
+  .mh-readout[data-size='lg'] .mh-readout__value {
+    text-shadow: var(--mh-glow-strong);
+  }
+
+  .mh-frame__accent {
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--mh-frame-accent, var(--mh-line-strong)) 60%, transparent));
+  }
+
+  .mh-frame__line {
+    stroke-opacity: 0.55;
+  }
+
+  .mh-gauge__tick[data-on] {
+    filter: drop-shadow(0 0 3px color-mix(in oklch, var(--_tone) 70%, transparent));
+  }
+
+  .mh-gauge__needle {
+    filter: drop-shadow(0 0 3px var(--_tone));
+  }
+
+  /* Starfield */
+  .mh-starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: oklch(0.08 0 0);
+  }
+
+  .mh-starfield canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The display surface: scan texture, lens falloff and a slow refresh bar, over everything. */
+  .mh-screen {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--mh-z-overlay) + 20);
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      radial-gradient(130% 110% at 50% 50%, transparent 58%, oklch(0 0 0 / 0.5) 100%),
+      repeating-linear-gradient(0deg, oklch(0 0 0 / 0.11) 0 1px, transparent 1px 3px);
+    transition: box-shadow var(--mh-dur-slow) linear;
+  }
+
+  .mh-screen::after {
+    content: '';
+    position: absolute;
+    inset: -20% 0 auto;
+    height: 18%;
+    background: linear-gradient(transparent, oklch(1 0 0 / 0.022) 50%, transparent);
+    animation: mh-refresh 9s linear infinite;
+  }
+
+  @keyframes mh-refresh {
+    to {
+      translate: 0 720%;
+    }
+  }
+
+  [data-mh-detail='minimal'] > .mh-screen {
+    display: none;
+  }
+
+  /* Alert states tint the whole display edge rather than any one component */
+  [data-mh-alert='caution'] > .mh-screen {
+    box-shadow: inset 0 0 90px -20px color-mix(in oklch, var(--mh-warn) 55%, transparent);
+  }
+
+  [data-mh-alert='red'] > .mh-screen {
+    box-shadow: inset 0 0 140px -20px color-mix(in oklch, var(--mh-danger) 75%, transparent);
+    animation: mh-alert 1.3s ease-in-out infinite;
+  }
+
+  @keyframes mh-alert {
+    50% {
+      box-shadow: inset 0 0 70px -30px color-mix(in oklch, var(--mh-danger) 35%, transparent);
+    }
+  }
+
+  /* Keeps the colour, drops the pulse: flashing is opt-in through full motion. */
+  [data-mh-motion='subtle'][data-mh-alert='red'] > .mh-screen {
+    animation: none;
+  }
+
+  [data-mh-alert='caution'] {
+    --mh-frame-line: color-mix(in oklch, var(--mh-warn) 62%, var(--mh-line));
+    --mh-frame-accent: var(--mh-warn);
+  }
+
+  [data-mh-alert='red'] {
+    --mh-frame-line: color-mix(in oklch, var(--mh-danger) 74%, var(--mh-line));
+    --mh-frame-accent: var(--mh-danger);
+  }
+
+  .mh-frame__line,
+  .mh-frame__accent {
+    transition: stroke var(--mh-dur-slow) linear;
+  }
+
+  /* Hologram */
+  .mh-hologram {
+    display: block;
+    width: 100%;
+    height: var(--mh-hologram-height, 170px);
+  }
+
+  /* TacticalVolume */
+  .mh-tactical {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    overflow: hidden;
+    outline: 0;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  .mh-tactical:active {
+    cursor: grabbing;
+  }
+
+  .mh-tactical:focus-visible {
+    outline: 1px dashed var(--mh-line-strong);
+    outline-offset: -6px;
+  }
+
+  .mh-tactical__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .mh-tactical__blip {
+    left: 0;
+    top: 0;
+    translate: none;
+    will-change: transform;
+    filter: drop-shadow(0 0 5px var(--_tone));
+  }
+
+  .mh-tactical__blip::before {
+    opacity: calc(0.62 + var(--_echo, 0) * 0.38);
+    scale: calc(1 + var(--_echo, 0) * 0.35);
+    animation: none;
+  }
+
+  .mh-tactical__blip[data-tone='neutral'] {
+    --_tone: var(--mh-fg-muted);
+  }
+
+  .mh-tactical__reticle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    pointer-events: none;
+  }
+
+  /* Tape */
+  .mh-tape {
+    position: relative;
+    height: 50px;
+    overflow: hidden;
+    color: var(--mh-fg-muted);
+    font-family: var(--mh-font-data);
+    font-size: var(--mh-text-2xs);
+  }
+
+  .mh-tape__scale {
+    position: absolute;
+    inset: 0;
+  }
+
+  .mh-tape__mark {
+    position: absolute;
+    top: 0;
+    left: var(--_at);
+    width: 1px;
+    height: 6px;
+    background: var(--mh-line-strong);
+    opacity: var(--_fade);
+  }
+
+  .mh-tape__mark[data-major] {
+    height: 11px;
+    background: var(--mh-fg);
+  }
+
+  .mh-tape__number {
+    position: absolute;
+    top: 14px;
+    left: 0;
+    translate: -50% 0;
+  }
+
+  .mh-tape__value {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    translate: -50% 0;
+    min-width: 48px;
+    padding: 1px 6px;
+    border: 1px solid var(--mh-line-strong);
+    background: oklch(0.08 0 0 / 0.86);
+    color: var(--mh-fg);
+    font-size: var(--mh-text-xs);
+    text-align: center;
+  }
+
+  .mh-tape::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 1;
+    width: 9px;
+    height: 7px;
+    translate: -50% 0;
+    background: var(--mh-accent);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    filter: drop-shadow(0 0 3px var(--mh-accent));
+  }
+
+  .mh-tape[data-vertical] {
+    width: 70px;
+    height: 100%;
+    min-height: 200px;
+  }
+
+  .mh-tape[data-vertical] .mh-tape__mark {
+    top: var(--_at);
+    left: 0;
+    width: 6px;
+    height: 1px;
+  }
+
+  .mh-tape[data-vertical] .mh-tape__mark[data-major] {
+    width: 11px;
+    height: 1px;
+  }
+
+  .mh-tape[data-vertical] .mh-tape__number {
+    top: 0;
+    left: 15px;
+    translate: 0 -50%;
+  }
+
+  .mh-tape[data-vertical] .mh-tape__value {
+    left: auto;
+    right: 0;
+    top: 50%;
+    bottom: auto;
+    translate: 0 -50%;
+  }
+
+  .mh-tape[data-vertical]::before {
+    left: 0;
+    top: 50%;
+    width: 7px;
+    height: 9px;
+    translate: 0 -50%;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+
+  /* Cockpit: side consoles angle in around the viewer */
+  .mh-cockpit {
+    --mh-look-x: 0;
+    --mh-look-y: 0;
+    perspective: 1500px;
+    perspective-origin: 50% 46%;
+  }
+
+  .mh-wing {
+    --_lean: 9deg;
+    min-width: 0;
+  }
+
+  .mh-wing[data-side='left'] {
+    transform-origin: 0% 50%;
+    transform: translateX(calc(var(--mh-look-x) * -6px)) rotateY(calc(var(--_lean) - var(--mh-look-x) * 1.4deg)) rotateX(calc(var(--mh-look-y) * 0.8deg));
+  }
+
+  .mh-wing[data-side='right'] {
+    transform-origin: 100% 50%;
+    transform: translateX(calc(var(--mh-look-x) * -6px)) rotateY(calc(var(--_lean) * -1 - var(--mh-look-x) * 1.4deg)) rotateX(calc(var(--mh-look-y) * 0.8deg));
+  }
+
+  @media (max-width: 1100px) {
+    .mh-wing[data-side] {
+      transform: none;
+    }
+  }
+
+  [data-mh-motion='off'] .mh-wing[data-side='left'] {
+    transform: rotateY(var(--_lean));
+  }
+
+  [data-mh-motion='off'] .mh-wing[data-side='right'] {
+    transform: rotateY(calc(var(--_lean) * -1));
+  }
+}

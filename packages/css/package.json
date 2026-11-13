@@ -1,0 +1,16 @@
+{
+  "name": "@monohud/css",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Joshua Guo",
+  "publishConfig": { "access": "public" },
+  "repository": { "type": "git", "url": "git+https://github.com/jshguo-labs/monohud.git", "directory": "packages/css" },
+  "homepage": "https://github.com/jshguo-labs/monohud#readme",
+  "bugs": "https://github.com/jshguo-labs/monohud/issues",
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "files": ["dist"],
+  "exports": { ".": "./dist/index.css" },
+  "scripts": { "build": "node ../../scripts/build-css.mjs" },
+  "dependencies": { "@monohud/tokens": "workspace:*" }
+}

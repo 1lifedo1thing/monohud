@@ -1,0 +1,16 @@
+{
+  "name": "@monohud/demo",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite --host 127.0.0.1 --port 5180", "build": "vite build" },
+  "dependencies": {
+    "@fontsource-variable/geist-mono": "^5.2.0",
+    "@monohud/css": "workspace:*",
+    "@monohud/fx": "workspace:*",
+    "@monohud/react": "workspace:*",
+    "@monohud/tokens": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": { "@vitejs/plugin-react": "^5.0.0", "vite": "^7.0.0" }
+}

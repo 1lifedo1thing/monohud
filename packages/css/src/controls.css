@@ -1,0 +1,496 @@
+@layer mh.components {
+  /* Button */
+  .mh-button {
+    --_h: 40px;
+    --_px: 18px;
+    --mh-cut: var(--mh-cut-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--mh-space-2);
+    height: var(--_h);
+    padding-inline: var(--_px);
+    border: 0;
+    background: none;
+    color: var(--mh-fg);
+    font-family: var(--mh-font-display);
+    font-size: var(--mh-text-sm);
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    transition:
+      color var(--mh-dur-fast) linear,
+      translate var(--mh-dur-fast) var(--mh-ease-snap);
+  }
+
+  .mh-button[data-size='sm'] {
+    --_h: 30px;
+    --_px: 12px;
+    font-size: var(--mh-text-xs);
+  }
+
+  .mh-button[data-size='lg'] {
+    --_h: 52px;
+    --_px: 28px;
+    --mh-cut: 7px;
+    font-size: var(--mh-text-md);
+  }
+
+  .mh-button[data-variant='primary'] {
+    --mh-fill: var(--mh-accent);
+    --mh-edge: var(--mh-accent);
+    --mh-lock-color: var(--mh-accent);
+    color: var(--mh-accent-fg);
+  }
+
+  .mh-button[data-variant='primary']:hover:not([data-disabled]) {
+    --mh-fill: color-mix(in oklch, var(--mh-accent), var(--mh-bg-0) 14%);
+  }
+
+  .mh-button[data-variant='secondary'] {
+    --mh-fill: var(--mh-bg-2);
+    --mh-edge: var(--mh-line-strong);
+  }
+
+  .mh-button[data-variant='secondary']:hover:not([data-disabled]) {
+    --mh-fill: var(--mh-bg-3);
+  }
+
+  .mh-button[data-variant='ghost'] {
+    --mh-fill: transparent;
+    --mh-edge: transparent;
+    color: var(--mh-fg-muted);
+  }
+
+  .mh-button[data-variant='ghost']:hover:not([data-disabled]) {
+    color: var(--mh-fg);
+    --mh-fill: var(--mh-bg-2);
+  }
+
+  .mh-button[data-variant='danger'] {
+    --mh-fill: color-mix(in oklch, var(--mh-danger), var(--mh-bg-0) 78%);
+    --mh-edge: var(--mh-danger);
+    --mh-lock-color: var(--mh-danger);
+    color: oklch(0.86 0.1 25);
+  }
+
+  .mh-button[data-variant='danger']:hover:not([data-disabled]) {
+    --mh-fill: var(--mh-danger);
+    color: var(--mh-danger-fg);
+  }
+
+  .mh-button:active:not([data-disabled]) {
+    translate: 0 1px;
+  }
+
+  .mh-button:focus-visible {
+    --mh-bw: 2px;
+    --mh-edge: var(--mh-fg);
+  }
+
+  /* The fill sits on top of the edge layer, so a visible edge needs an opaque fill. */
+  .mh-button[data-variant='ghost']:focus-visible {
+    --mh-fill: var(--mh-bg-2);
+  }
+
+  .mh-button[data-disabled] {
+    --mh-fill: var(--mh-bg-1);
+    --mh-edge: var(--mh-bg-3);
+    color: var(--mh-fg-faint);
+    cursor: not-allowed;
+  }
+
+  .mh-button[data-loading] {
+    --mh-fill-image: repeating-linear-gradient(
+      115deg,
+      transparent 0 8px,
+      oklch(0 0 0 / 0.14) 8px 16px
+    );
+    cursor: progress;
+  }
+
+  .mh-button[data-loading]::after {
+    background-size: 200% 100%;
+    animation: mh-stripe 900ms linear infinite;
+  }
+
+  @keyframes mh-stripe {
+    to {
+      background-position: -34px 0;
+    }
+  }
+
+  .mh-icon {
+    display: block;
+    flex: none;
+    width: 1em;
+    height: 1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+  }
+
+  /* Field */
+  .mh-field {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .mh-field__label {
+    color: var(--mh-fg-muted);
+    font-size: var(--mh-text-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .mh-field__description {
+    margin: 0;
+    color: var(--mh-fg-faint);
+    font-size: var(--mh-text-xs);
+  }
+
+  .mh-field__error {
+    margin: 0;
+    color: oklch(0.8 0.14 25);
+    font-size: var(--mh-text-xs);
+  }
+
+  .mh-form {
+    display: grid;
+    gap: var(--mh-space-4);
+  }
+
+  /* Input */
+  .mh-input-shell {
+    --mh-tr: 0px;
+    --mh-cut: var(--mh-cut-sm);
+    --mh-fill: var(--mh-bg-0);
+    display: flex;
+    align-items: center;
+    height: 40px;
+  }
+
+  .mh-input-shell:hover:not(:has([data-disabled])) {
+    --mh-edge: var(--mh-line-strong);
+  }
+
+  .mh-input-shell:has(:focus-visible) {
+    --mh-fill: var(--mh-bg-1);
+  }
+
+  .mh-input-shell:has([data-invalid]) {
+    --mh-edge: var(--mh-danger);
+    --mh-lock-color: var(--mh-danger);
+  }
+
+  .mh-input-shell:has([data-disabled]) {
+    --mh-edge: var(--mh-bg-3);
+  }
+
+  .mh-input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    padding-inline: var(--mh-space-3);
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--mh-fg);
+    font-family: var(--mh-font-body);
+    font-size: var(--mh-text-sm);
+  }
+
+  .mh-input::placeholder {
+    color: var(--mh-fg-faint);
+    opacity: 1;
+  }
+
+  .mh-input[data-disabled] {
+    color: var(--mh-fg-faint);
+    cursor: not-allowed;
+  }
+
+  /* Checkbox, radio, switch share one row */
+  .mh-choice {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 24px;
+    color: var(--mh-fg);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .mh-choice:has([data-disabled]) {
+    color: var(--mh-fg-faint);
+    cursor: not-allowed;
+  }
+
+  .mh-checkbox,
+  .mh-radio {
+    --mh-cut: 5px;
+    --mh-fill: var(--mh-bg-0);
+    --mh-edge: var(--mh-line-strong);
+    display: inline-grid;
+    flex: none;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+  }
+
+  .mh-checkbox[data-checked],
+  .mh-checkbox[data-indeterminate],
+  .mh-radio[data-checked] {
+    --mh-edge: var(--mh-accent);
+  }
+
+  .mh-checkbox[data-disabled],
+  .mh-radio[data-disabled] {
+    --mh-edge: var(--mh-bg-3);
+  }
+
+  /* Inset 4px, with the cut reduced to match, so the gap stays even around the chamfers */
+  .mh-checkbox__indicator {
+    --_cut: calc(var(--mh-cut) - 0.586 * 4px);
+    width: 10px;
+    height: 10px;
+    background: var(--mh-accent);
+    clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)), calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+    transition: scale var(--mh-dur-fast) var(--mh-ease-snap);
+  }
+
+  .mh-checkbox__indicator[data-starting-style],
+  .mh-checkbox__indicator[data-ending-style] {
+    scale: 0;
+  }
+
+  .mh-checkbox__indicator[data-indeterminate] {
+    height: 2px;
+    clip-path: none;
+  }
+
+  .mh-radio {
+    --mh-tl: 9px;
+    --mh-tr: 9px;
+    --mh-br: 9px;
+    --mh-bl: 9px;
+  }
+
+  .mh-radio__indicator {
+    width: 8px;
+    height: 8px;
+    background: var(--mh-accent);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    transition: scale var(--mh-dur-fast) var(--mh-ease-snap);
+  }
+
+  .mh-radio__indicator[data-starting-style],
+  .mh-radio__indicator[data-ending-style] {
+    scale: 0;
+  }
+
+  .mh-radio-group {
+    display: grid;
+    gap: var(--mh-space-2);
+  }
+
+  .mh-switch {
+    --mh-cut: 5px;
+    --mh-fill: var(--mh-bg-0);
+    --mh-edge: var(--mh-line-strong);
+    display: inline-block;
+    flex: none;
+    width: 44px;
+    height: 22px;
+    padding: 4px;
+  }
+
+  .mh-switch[data-checked] {
+    --mh-edge: var(--mh-accent);
+    --mh-fill: color-mix(in oklch, var(--mh-accent), var(--mh-bg-0) 84%);
+  }
+
+  .mh-switch[data-disabled] {
+    --mh-edge: var(--mh-bg-3);
+  }
+
+  .mh-switch__thumb {
+    --_cut: calc(var(--mh-cut) - 0.586 * 4px);
+    display: block;
+    width: 18px;
+    height: 14px;
+    background: var(--mh-line-strong);
+    clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)), calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+    transition:
+      translate var(--mh-dur-med) var(--mh-ease-snap),
+      background-color var(--mh-dur-fast) linear;
+  }
+
+  .mh-switch__thumb[data-checked] {
+    translate: 18px 0;
+    background: var(--mh-accent);
+  }
+
+  /* A ring in the free side when off and a bar when on, so state reads without colour */
+  .mh-switch__mark {
+    position: absolute;
+    top: 7px;
+    left: 27px;
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--mh-fg-faint);
+    border-radius: 50%;
+  }
+
+  .mh-switch[data-checked] .mh-switch__mark {
+    left: 13px;
+    width: 1px;
+    border: 0;
+    border-radius: 0;
+    background: var(--mh-accent);
+  }
+
+  .mh-switch[data-disabled] .mh-switch__mark {
+    opacity: 0.5;
+  }
+
+  /* Slider */
+  .mh-slider {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2px var(--mh-space-3);
+    align-items: baseline;
+    min-width: 0;
+  }
+
+  .mh-slider__value {
+    color: var(--mh-fg);
+    font-family: var(--mh-font-data);
+    font-size: var(--mh-text-sm);
+  }
+
+  .mh-slider__control {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    height: 26px;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .mh-slider__track {
+    position: relative;
+    width: 100%;
+    height: 12px;
+    background: linear-gradient(var(--mh-line) 0 0) 0 50% / 100% 1px no-repeat;
+  }
+
+  .mh-slider__indicator {
+    background: var(--mh-accent);
+    /* Base UI sets an inline `height: inherit`. */
+    height: 2px !important;
+    top: 5px !important;
+    box-shadow: 0 0 6px color-mix(in oklch, var(--mh-accent) 55%, transparent);
+  }
+
+  /* A fader carriage: dark body, lit edge, and one index line that reads the value. */
+  .mh-slider__thumb {
+    --mh-cut: 3px;
+    --mh-fill: var(--mh-bg-0);
+    --mh-edge: var(--mh-accent);
+    --mh-fill-image: linear-gradient(var(--mh-accent) 0 0) 50% 50% / 2px 10px no-repeat;
+    width: 12px;
+    height: 20px;
+    cursor: grab;
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--mh-accent) 45%, transparent));
+    transition: filter var(--mh-dur-fast) linear;
+  }
+
+  .mh-slider__thumb:hover {
+    --mh-fill: var(--mh-bg-3);
+    filter: drop-shadow(0 0 6px color-mix(in oklch, var(--mh-accent) 70%, transparent));
+  }
+
+  .mh-slider__thumb[data-dragging] {
+    --mh-fill: var(--mh-accent);
+    --mh-fill-image: linear-gradient(var(--mh-accent-fg) 0 0) 50% 50% / 2px 10px no-repeat;
+    cursor: grabbing;
+  }
+
+  .mh-slider__thumb[data-disabled] {
+    --mh-fill: var(--mh-bg-1);
+    --mh-edge: var(--mh-line);
+    --mh-fill-image: linear-gradient(var(--mh-line) 0 0) 50% 50% / 2px 10px no-repeat;
+    cursor: not-allowed;
+    filter: none;
+  }
+
+  /* Progress and meter: a segmented cell bar, as on ammo and shield readouts */
+  .mh-bar {
+    --_tone: var(--mh-accent);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px var(--mh-space-3);
+    align-items: baseline;
+    min-width: 0;
+  }
+
+  .mh-bar[data-tone='ok'] {
+    --_tone: var(--mh-ok);
+  }
+
+  .mh-bar[data-tone='info'] {
+    --_tone: var(--mh-info);
+  }
+
+  .mh-bar[data-tone='warn'] {
+    --_tone: var(--mh-warn);
+  }
+
+  .mh-bar[data-tone='danger'] {
+    --_tone: var(--mh-danger);
+  }
+
+  .mh-bar__value {
+    font-family: var(--mh-font-data);
+    font-size: var(--mh-text-sm);
+    color: var(--_tone);
+  }
+
+  .mh-bar__track {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(var(--mh-bar-cells, 1), minmax(0, 1fr));
+    gap: var(--mh-bar-gap, 2px);
+    height: 10px;
+  }
+
+  .mh-bar__cell {
+    background: linear-gradient(90deg, var(--_tone) var(--mh-cell-fill, 0%), var(--mh-bg-3) 0);
+  }
+
+  .mh-bar__cell[data-on] {
+    background: var(--_tone);
+  }
+
+  /* Each cell lights in turn, offset by its index, so a block of cells runs along the bar. */
+  .mh-bar__track[data-indeterminate] .mh-bar__cell {
+    animation: mh-bar-run 1400ms linear infinite;
+    animation-delay: calc(1400ms * var(--mh-cell-index) / var(--mh-bar-cells) - 1400ms);
+  }
+
+  @keyframes mh-bar-run {
+    0%,
+    34% {
+      background: var(--_tone);
+    }
+    34.01%,
+    100% {
+      background: var(--mh-bg-3);
+    }
+  }
+}

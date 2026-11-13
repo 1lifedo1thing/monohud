@@ -1,0 +1,485 @@
+@layer mh.components {
+  /* Frame: SVG-drawn outline for large surfaces, with notches and a line-draw entrance */
+  .mh-frame {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+  }
+
+  .mh-frame__art {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .mh-frame__fill {
+    fill: var(--mh-frame-fill, oklch(0.115 0 0 / 0.72));
+    transition: opacity var(--mh-dur-slow) linear;
+  }
+
+  .mh-frame__line {
+    fill: none;
+    stroke: var(--mh-frame-line, var(--mh-line));
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .mh-frame__accent {
+    fill: none;
+    stroke: var(--mh-frame-accent, var(--mh-line-strong));
+    stroke-width: 2;
+  }
+
+  .mh-frame[data-entering] .mh-frame__line {
+    stroke-dasharray: 1;
+    animation: mh-draw 900ms var(--mh-ease-snap) both;
+    animation-delay: var(--mh-enter-delay, 0ms);
+  }
+
+  .mh-frame[data-entering] .mh-frame__fill,
+  .mh-frame[data-entering] .mh-frame__accent,
+  .mh-frame[data-entering] > .mh-frame__content {
+    animation: mh-rise 420ms linear both;
+    animation-delay: calc(var(--mh-enter-delay, 0ms) + 260ms);
+  }
+
+  [data-mh-motion='subtle'] .mh-frame[data-entering] .mh-frame__line {
+    animation-duration: 1ms;
+  }
+
+  @keyframes mh-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes mh-rise {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .mh-frame__content {
+    height: 100%;
+  }
+
+  /* Panel */
+  .mh-panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .mh-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mh-space-3);
+    padding: 11px var(--mh-space-4) 0 var(--mh-space-4);
+  }
+
+  .mh-panel__title {
+    margin: 0;
+    padding-inline-end: var(--mh-space-3);
+    font-family: var(--mh-font-display);
+    font-size: var(--mh-text-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--mh-fg);
+  }
+
+  .mh-panel__meta {
+    color: var(--mh-fg-faint);
+    font-family: var(--mh-font-data);
+    font-size: var(--mh-text-xs);
+  }
+
+  .mh-panel__body {
+    flex: 1;
+    min-height: 0;
+    padding: var(--mh-space-3) var(--mh-space-4) var(--mh-space-4);
+  }
+
+  /* Readout */
+  .mh-readout {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .mh-readout__row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .mh-readout__value {
+    color: var(--mh-fg);
+    font-family: var(--mh-font-data);
+    font-size: var(--mh-text-xl);
+    line-height: 1.1;
+  }
+
+  .mh-readout[data-size='lg'] .mh-readout__value {
+    font-size: var(--mh-text-2xl);
+  }
+
+  .mh-readout[data-size='sm'] .mh-readout__value {
+    font-size: var(--mh-text-md);
+  }
+
+  .mh-readout__unit {
+    color: var(--mh-fg-muted);
+    font-family: var(--mh-font-data);
+    font-size: var(--mh-text-xs);
+  }
+
+  .mh-readout[data-tone='accent'] .mh-readout__value {
+    color: var(--mh-accent);
+  }
+
+  .mh-readout[data-tone='ok'] .mh-readout__value {
+    color: var(--mh-ok);
+  }
+
+  .mh-readout[data-tone='warn'] .mh-readout__value {
+    color: var(--mh-warn);
+  }
+
+  .mh-readout[data-tone='danger'] .mh-readout__value {
+    color: oklch(0.8 0.15 25);
+  }
+
+  /* Status */
+  .mh-status {
+    --_tone: var(--mh-fg-faint);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--mh-fg);
+    font-size: var(--mh-text-xs);
+    letter-spacing: 0.04em;
+  }
+
+  .mh-status[data-tone='ok'] {
+    --_tone: var(--mh-ok);
+  }
+
+  .mh-status[data-tone='info'] {
+    --_tone: var(--mh-info);
+  }
+
+  .mh-status[data-tone='warn'] {
+    --_tone: var(--mh-warn);
+  }
+
+  .mh-status[data-tone='danger'] {
+    --_tone: var(--mh-danger);
+  }
+
+  .mh-status__mark {
+    flex: none;
+    width: 9px;
+    height: 9px;
+    background: var(--_tone);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
+
+  .mh-status[data-pulse] .mh-status__mark {
+    animation: mh-pulse 1100ms steps(2, jump-none) infinite;
+  }
+
+  @keyframes mh-pulse {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  /* Gauge */
+  .mh-gauge {
+    --_tone: var(--mh-accent);
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: var(--mh-gauge-size, 160px);
+    aspect-ratio: 1;
+  }
+
+  .mh-gauge[data-tone='ok'] {
+    --_tone: var(--mh-ok);
+  }
+
+  .mh-gauge[data-tone='info'] {
+    --_tone: var(--mh-info);
+  }
+
+  .mh-gauge[data-tone='warn'] {
+    --_tone: var(--mh-warn);
+  }
+
+  .mh-gauge[data-tone='danger'] {
+    --_tone: var(--mh-danger);
+  }
+
+  .mh-gauge__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .mh-gauge__tick {
+    stroke: var(--mh-bg-3);
+    stroke-width: 3;
+    transition: stroke var(--mh-dur-med) linear;
+  }
+
+  .mh-gauge__tick[data-on] {
+    stroke: var(--_tone);
+  }
+
+  .mh-gauge__center {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .mh-gauge__value {
+    font-family: var(--mh-font-data);
+    font-size: calc(var(--mh-gauge-size, 160px) * 0.2);
+    line-height: 1.1;
+  }
+
+  /* Radar */
+  .mh-radar {
+    position: relative;
+    width: var(--mh-radar-size, 100%);
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--mh-bg-1), var(--mh-bg-0) 72%);
+  }
+
+  .mh-radar__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .mh-radar__ring {
+    fill: none;
+    stroke: var(--mh-line);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .mh-radar__sweep {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 72%, var(--mh-accent-dim) 96%, color-mix(in oklch, var(--mh-accent), transparent 45%) 100%);
+    animation: mh-spin var(--mh-radar-period, 4s) linear infinite;
+  }
+
+  [data-mh-motion='subtle'] .mh-radar__sweep {
+    animation-duration: 12s;
+  }
+
+  @keyframes mh-spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  /* The button is a 28px hit area; the diamond the player sees is its ::before. */
+  .mh-radar__blip {
+    --_tone: var(--mh-fg);
+    --_size: 9px;
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    translate: -50% -50%;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: none;
+  }
+
+  button.mh-radar__blip {
+    cursor: pointer;
+  }
+
+  .mh-radar__blip::before {
+    content: '';
+    width: var(--_size);
+    height: var(--_size);
+    background: var(--_tone);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    animation: mh-blip var(--mh-radar-period, 4s) linear infinite;
+    animation-delay: calc(var(--_angle) / 360 * var(--mh-radar-period, 4s));
+  }
+
+  .mh-radar__blip:hover::before {
+    scale: 1.5;
+  }
+
+  .mh-radar__blip:focus-visible {
+    outline: 1.5px solid var(--mh-accent);
+    outline-offset: -4px;
+  }
+
+  .mh-radar__blip[data-tone='hostile'] {
+    --_tone: var(--mh-danger);
+  }
+
+  .mh-radar__blip[data-tone='friendly'] {
+    --_tone: var(--mh-ok);
+  }
+
+  .mh-radar__blip[data-tone='neutral'] {
+    --_tone: var(--mh-info);
+  }
+
+  .mh-radar__blip[data-tone='target'] {
+    --_tone: var(--mh-accent);
+    --_size: 12px;
+  }
+
+  @keyframes mh-blip {
+    0% {
+      opacity: 1;
+    }
+    70%,
+    100% {
+      opacity: 0.55;
+    }
+  }
+
+  /* Waveform */
+  .mh-waveform {
+    display: block;
+    width: 100%;
+    height: var(--mh-waveform-height, 64px);
+  }
+
+  /* Log */
+  .mh-log {
+    display: grid;
+    align-content: start;
+    gap: 3px;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+    font-size: var(--mh-text-xs);
+  }
+
+  .mh-log__entry {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--mh-space-3);
+    color: var(--mh-fg-muted);
+  }
+
+  .mh-log__time {
+    color: var(--mh-fg-faint);
+    font-family: var(--mh-font-data);
+  }
+
+  .mh-log__entry[data-level='warn'] .mh-log__text {
+    color: var(--mh-warn);
+  }
+
+  .mh-log__entry[data-level='danger'] .mh-log__text {
+    color: oklch(0.8 0.15 25);
+  }
+
+  .mh-log__entry[data-level='ok'] .mh-log__text {
+    color: var(--mh-ok);
+  }
+
+  .mh-log__entry:last-child .mh-log__text {
+    color: var(--mh-fg);
+  }
+
+  /* Reticle */
+  .mh-reticle {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: var(--mh-reticle-size, 180px);
+    aspect-ratio: 1;
+    color: var(--mh-line-strong);
+    transition: color var(--mh-dur-med) linear;
+  }
+
+  .mh-reticle[data-locked] {
+    color: var(--mh-accent);
+  }
+
+  .mh-reticle__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+  }
+
+  .mh-reticle__ring {
+    transform-origin: 50% 50%;
+    animation: mh-spin 14s linear infinite;
+  }
+
+  .mh-reticle__brackets {
+    transform-origin: 50% 50%;
+    scale: 1.14;
+    opacity: 0.6;
+    transition:
+      scale var(--mh-dur-slow) var(--mh-ease-snap),
+      opacity var(--mh-dur-fast) linear;
+  }
+
+  .mh-reticle[data-locked] .mh-reticle__brackets {
+    scale: 1;
+    opacity: 1;
+  }
+
+  /* Grid background */
+  .mh-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 90% at 50% 40%, transparent 30%, var(--mh-bg-0) 92%),
+      linear-gradient(oklch(0.5 0 0 / 0.22) 1px, transparent 1px) 0 0 / 120px 120px,
+      linear-gradient(90deg, oklch(0.5 0 0 / 0.22) 1px, transparent 1px) 0 0 / 120px 120px,
+      linear-gradient(oklch(0.5 0 0 / 0.07) 1px, transparent 1px) 0 0 / 24px 24px,
+      linear-gradient(90deg, oklch(0.5 0 0 / 0.07) 1px, transparent 1px) 0 0 / 24px 24px,
+      var(--mh-bg-0);
+  }
+
+  .mh-grid[data-scanlines]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, oklch(0 0 0 / 0.1) 0 1px, transparent 1px 3px);
+  }
+
+  .mh-decode {
+    white-space: pre-wrap;
+  }
+}

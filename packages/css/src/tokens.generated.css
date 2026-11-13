@@ -1,0 +1,71 @@
+@layer mh.tokens {
+:root {
+  --mh-bg-0: oklch(0.1 0 0);
+  --mh-bg-1: oklch(0.15 0 0);
+  --mh-bg-2: oklch(0.2 0 0);
+  --mh-bg-3: oklch(0.27 0 0);
+  --mh-line: oklch(0.52 0 0);
+  --mh-line-strong: oklch(0.74 0 0);
+  --mh-fg: oklch(0.95 0 0);
+  --mh-fg-muted: oklch(0.77 0 0);
+  --mh-fg-faint: oklch(0.63 0 0);
+  --mh-info: oklch(0.84 0 0);
+  --mh-ok: oklch(0.84 0.15 155);
+  --mh-warn: oklch(0.78 0.16 62);
+  --mh-danger: oklch(0.68 0.21 27);
+  --mh-danger-fg: oklch(0.15 0 0);
+  --mh-space-1: 4px;
+  --mh-space-2: 8px;
+  --mh-space-3: 12px;
+  --mh-space-4: 16px;
+  --mh-space-5: 24px;
+  --mh-space-6: 32px;
+  --mh-cut-sm: 5px;
+  --mh-cut-md: 9px;
+  --mh-cut-lg: 16px;
+  --mh-text-2xs: 0.6875rem;
+  --mh-text-xs: 0.75rem;
+  --mh-text-sm: 0.875rem;
+  --mh-text-md: 1rem;
+  --mh-text-lg: 1.25rem;
+  --mh-text-xl: 1.75rem;
+  --mh-text-2xl: 2.75rem;
+  --mh-ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+  --mh-dur-fast: 120ms;
+  --mh-dur-med: 240ms;
+  --mh-dur-slow: 520ms;
+  --mh-z-overlay: 100;
+  --mh-glow: 0 0 12px color-mix(in oklch, currentColor 42%, transparent);
+  --mh-glow-strong: 0 0 6px color-mix(in oklch, currentColor 60%, transparent), 0 0 22px color-mix(in oklch, currentColor 36%, transparent);
+  --mh-font-display: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'PingFang SC', 'Noto Sans SC', monospace;
+  --mh-font-body: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'PingFang SC', 'Noto Sans SC', monospace;
+  --mh-font-data: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'PingFang SC', 'Noto Sans SC', monospace;
+  --mh-accent: oklch(0.96 0 0);
+  --mh-accent-fg: oklch(0.14 0 0);
+  --mh-accent-dim: oklch(0.96 0 0 / 0.14);
+}
+
+[data-mh-theme='mono'] {
+  --mh-accent: oklch(0.96 0 0);
+  --mh-accent-fg: oklch(0.14 0 0);
+  --mh-accent-dim: oklch(0.96 0 0 / 0.14);
+}
+
+[data-mh-theme='sodium'] {
+  --mh-accent: oklch(0.82 0.16 78);
+  --mh-accent-fg: oklch(0.2 0.04 70);
+  --mh-accent-dim: oklch(0.82 0.16 78 / 0.16);
+}
+
+[data-mh-theme='ion'] {
+  --mh-accent: oklch(0.85 0.12 182);
+  --mh-accent-fg: oklch(0.2 0.04 190);
+  --mh-accent-dim: oklch(0.85 0.12 182 / 0.16);
+}
+
+[data-mh-theme='ember'] {
+  --mh-accent: oklch(0.74 0.18 40);
+  --mh-accent-fg: oklch(0.18 0.04 40);
+  --mh-accent-dim: oklch(0.74 0.18 40 / 0.18);
+}
+}

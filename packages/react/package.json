@@ -1,0 +1,19 @@
+{
+  "name": "@monohud/react",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Joshua Guo",
+  "publishConfig": { "access": "public" },
+  "repository": { "type": "git", "url": "git+https://github.com/jshguo-labs/monohud.git", "directory": "packages/react" },
+  "homepage": "https://github.com/jshguo-labs/monohud#readme",
+  "bugs": "https://github.com/jshguo-labs/monohud/issues",
+  "type": "module",
+  "sideEffects": ["**/*.css"],
+  "files": ["dist"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "scripts": { "build": "tsdown && node scripts/check-dist.mjs" },
+  "dependencies": { "@base-ui/react": "~1.9.0", "@monohud/css": "workspace:*", "@monohud/fx": "workspace:*" },
+  "peerDependencies": { "react": "^18 || ^19", "react-dom": "^18 || ^19" }
+}

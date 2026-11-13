@@ -1,0 +1,177 @@
+@layer mh.base {
+  .mh-root {
+    color-scheme: dark;
+    color: var(--mh-fg);
+    font-family: var(--mh-font-body);
+    font-size: var(--mh-text-sm);
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    scrollbar-color: var(--mh-line) transparent;
+    scrollbar-width: thin;
+    accent-color: var(--mh-accent);
+    caret-color: var(--mh-accent);
+  }
+
+  .mh-root *,
+  .mh-root *::before,
+  .mh-root *::after {
+    box-sizing: border-box;
+  }
+
+  .mh-root ::selection {
+    background: var(--mh-accent);
+    color: var(--mh-accent-fg);
+  }
+
+  .mh-distortion {
+    position: absolute;
+  }
+
+  /*
+   * Filtered per child, never on the root: a filter would become the containing block for fixed
+   * overlays, which then scroll with a scrolling root. Portals filter their own surfaces.
+   */
+  .mh-root[data-mh-distortion] > :not(.mh-distortion, [data-base-ui-portal], .mh-starfield, .mh-screen) {
+    filter: var(--mh-warp);
+  }
+
+  /*
+   * Chamfered box. The element itself is never clipped, so text, the lock-on brackets and a
+   * parent's drop-shadow all survive. Edge and fill are two clipped pseudo-elements; the fill's
+   * cut shrinks by (2 - √2) × border so the diagonal stays as thick as the straight edges.
+   */
+  .mh-cut {
+    --mh-tl: var(--mh-cut, var(--mh-cut-md));
+    --mh-tr: 0px;
+    --mh-br: var(--mh-cut, var(--mh-cut-md));
+    --mh-bl: 0px;
+    --mh-bw: 1px;
+    --mh-edge: var(--mh-line);
+    --mh-fill: var(--mh-bg-1);
+    --mh-mark: color-mix(in oklch, currentColor 34%, transparent);
+    position: relative;
+    isolation: isolate;
+  }
+
+  .mh-cut::before,
+  .mh-cut::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    clip-path: polygon(
+      var(--_tl) 0,
+      calc(100% - var(--_tr)) 0,
+      100% var(--_tr),
+      100% calc(100% - var(--_br)),
+      calc(100% - var(--_br)) 100%,
+      var(--_bl) 100%,
+      0 calc(100% - var(--_bl)),
+      0 var(--_tl)
+    );
+    transition: background-color var(--mh-dur-fast) linear;
+  }
+
+  .mh-cut::before {
+    inset: 0;
+    background-color: var(--mh-edge);
+    --_tl: var(--mh-tl);
+    --_tr: var(--mh-tr);
+    --_br: var(--mh-br);
+    --_bl: var(--mh-bl);
+  }
+
+  .mh-cut::after {
+    inset: var(--mh-bw);
+    background: var(--mh-fill-image, none), var(--mh-fill);
+    --_tl: max(0px, calc(var(--mh-tl) - 0.586 * var(--mh-bw)));
+    --_tr: max(0px, calc(var(--mh-tr) - 0.586 * var(--mh-bw)));
+    --_br: max(0px, calc(var(--mh-br) - 0.586 * var(--mh-bw)));
+    --_bl: max(0px, calc(var(--mh-bl) - 0.586 * var(--mh-bw)));
+  }
+
+  /*
+   * Lock-on brackets: the kit's signature. They wait outside the control and snap onto it on
+   * hover and keyboard focus. They double as the focus ring, which a clip-path would otherwise eat.
+   */
+  .mh-lock {
+    --_c: var(--mh-lock-color, var(--mh-line-strong));
+    --_l: 7px;
+    --_t: 1.5px;
+    position: absolute;
+    inset: -13px;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    background:
+      linear-gradient(var(--_c) 0 0) 0 0 / var(--_l) var(--_t),
+      linear-gradient(var(--_c) 0 0) 0 0 / var(--_t) var(--_l),
+      linear-gradient(var(--_c) 0 0) 100% 0 / var(--_l) var(--_t),
+      linear-gradient(var(--_c) 0 0) 100% 0 / var(--_t) var(--_l),
+      linear-gradient(var(--_c) 0 0) 0 100% / var(--_l) var(--_t),
+      linear-gradient(var(--_c) 0 0) 0 100% / var(--_t) var(--_l),
+      linear-gradient(var(--_c) 0 0) 100% 100% / var(--_l) var(--_t),
+      linear-gradient(var(--_c) 0 0) 100% 100% / var(--_t) var(--_l);
+    background-repeat: no-repeat;
+    transition:
+      inset var(--mh-dur-med) var(--mh-ease-snap),
+      opacity var(--mh-dur-fast) linear;
+  }
+
+  @media (hover: hover) {
+    .mh-lockable:hover:not([data-disabled], :disabled) > .mh-lock {
+      inset: -5px;
+      opacity: 1;
+    }
+  }
+
+  .mh-lockable:focus-visible,
+  .mh-lockable:has(:focus-visible) {
+    --mh-lock-color: var(--mh-accent);
+    --mh-edge: var(--mh-accent);
+    outline: none;
+  }
+
+  .mh-lockable:focus-visible > .mh-lock,
+  .mh-lockable:has(:focus-visible) > .mh-lock {
+    inset: -5px;
+    opacity: 1;
+  }
+
+  [data-mh-motion='off'] *,
+  [data-mh-motion='off'] *::before,
+  [data-mh-motion='off'] *::after {
+    animation: none !important;
+    transition-duration: 0ms !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mh-root *,
+    .mh-root *::before,
+    .mh-root *::after {
+      animation: none !important;
+      transition-duration: 0ms !important;
+    }
+  }
+
+  .mh-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .mh-label {
+    color: var(--mh-fg-muted);
+    font-size: var(--mh-text-xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .mh-data {
+    font-family: var(--mh-font-data);
+  }
+}
