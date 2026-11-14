@@ -1,6 +1,8 @@
 {
   "name": "@monohud/fx",
   "version": "0.1.0",
+  "description": "Framework-free effects for sci-fi interfaces: WebGL starfield, wireframe 3D, signal distortion, decode text and synthesised sound",
+  "keywords": ["effects", "webgl", "canvas", "sci-fi", "hud", "game-ui", "starfield"],
   "license": "MIT",
   "author": "Joshua Guo",
   "publishConfig": { "access": "public" },

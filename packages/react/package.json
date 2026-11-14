@@ -1,6 +1,8 @@
 {
   "name": "@monohud/react",
   "version": "0.1.0",
+  "description": "Sci-fi React components for game and immersive interfaces, built on Base UI",
+  "keywords": ["react", "components", "ui", "sci-fi", "hud", "game-ui", "base-ui", "design-system"],
   "license": "MIT",
   "author": "Joshua Guo",
   "publishConfig": { "access": "public" },

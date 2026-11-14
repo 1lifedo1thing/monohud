@@ -1,6 +1,8 @@
 {
   "name": "@monohud/css",
   "version": "0.1.0",
+  "description": "Stylesheet for Monohud, a sci-fi UI kit for game and immersive interfaces",
+  "keywords": ["css", "ui", "sci-fi", "hud", "game-ui", "design-system"],
   "license": "MIT",
   "author": "Joshua Guo",
   "publishConfig": { "access": "public" },

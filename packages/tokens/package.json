@@ -1,6 +1,8 @@
 {
   "name": "@monohud/tokens",
   "version": "0.1.0",
+  "description": "Design tokens and themes for Monohud, a sci-fi UI kit",
+  "keywords": ["design-tokens", "css-variables", "theme", "sci-fi", "hud"],
   "license": "MIT",
   "author": "Joshua Guo",
   "publishConfig": { "access": "public" },

@@ -33,4 +33,3 @@ A sci-fi UI kit built on the mature headless library Base UI. Base UI guarantees
 ## Open Decisions
 
 - When to build the non-React (Custom Elements) layer.
-- The `@monohud/*` npm scope is not registered yet.
