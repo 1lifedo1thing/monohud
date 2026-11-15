@@ -1,0 +1,182 @@
+# Monohud
+
+> Sci-fi React components for game and immersive interfaces, built on Base UI. Monochrome by default, with colour reserved for status (green ok, orange warn, red danger). One typeface throughout: Geist Mono. Packages: `@monohud/react` (components), `@monohud/css` (stylesheet), `@monohud/fx` (framework-free effects), `@monohud/tokens` (design tokens). Version 0.1.0, MIT.
+
+This file is for AI coding agents. It covers setup, the rules that keep a Monohud interface correct, and every exported component with its props. Base UI supplies behaviour, keyboard support and accessibility; Monohud adds the visual layer.
+
+## Setup
+
+```bash
+npm install @monohud/react @monohud/css
+```
+
+Requires React 18 or 19. Fonts are not bundled; load Geist Mono yourself (for example `npm install @fontsource-variable/geist-mono` and `import '@fontsource-variable/geist-mono'`), or the system monospace fallback applies.
+
+```tsx
+import '@monohud/css';
+import { MonohudProvider, Panel, Button } from '@monohud/react';
+
+export function App() {
+  return (
+    <MonohudProvider>
+      <Panel title="Ship systems">
+        <Button variant="primary">Start jump</Button>
+      </Panel>
+    </MonohudProvider>
+  );
+}
+```
+
+## Rules
+
+- Import `@monohud/css` once, and wrap the whole interface in one `MonohudProvider`. Styles only apply inside its `.mh-root` element, and portalled layers (Dialog, Menu, Select, Tooltip, toasts) render inside it so they receive theme and motion.
+- Do not add colours. Use `tone` (`'accent' | 'ok' | 'info' | 'warn' | 'danger'`) for status, and `theme` on the provider for an accent colour. `info` is neutral grey on purpose.
+- Override styling with `--mh-*` custom properties or your own unlayered CSS. Monohud's rules sit in cascade layers `mh.tokens`, `mh.base` and `mh.components`, so unlayered CSS wins without `!important`.
+- CSS class names (`mh-*`) and `data-mh-*` attributes are internal and may change before 1.0. Prefer props.
+- Components with a `label: string` prop (Gauge, Radar, Waveform, LogStream, Hologram, TacticalVolume, Tape) use it as the accessible name. Always pass a meaningful label.
+- `Slider` needs `label` or `thumbLabel`. `RadioGroup` needs `aria-label` or a visible label. `Tabs.List` needs `aria-label`.
+- Use `render` to put a Monohud `Button` inside Base UI triggers: `<Dialog.Trigger render={<Button variant="danger" />}>Abandon</Dialog.Trigger>`. The same works for `Menu.Trigger` and `Dialog.Close`.
+- Components are client components (`'use client'` is in the bundle). In Next.js App Router they can be imported from server components. `Progress` and `Meter` with `cells="auto"` render no cells on the server, then fill in after hydration.
+- Keep full-screen effects (`Starfield` `flash`, `alert="red"`) under three flashes per second, and give players a setting for `motion` and `distortion`. `prefers-reduced-motion` always turns motion off.
+
+## Provider
+
+`MonohudProvider` renders a `div` and accepts its props, plus:
+
+- `theme?: 'mono' | 'sodium' | 'ion' | 'ember'` = `'mono'`. Non-mono themes replace the accent colour only.
+- `motion?: 'off' | 'subtle' | 'full'` = `'full'`.
+- `detail?: 'full' | 'minimal'` = `'full'`. `minimal` hides etched marks and micro-labels for dense layouts.
+- `distortion?: number` = `0.15`. Signal tearing across the interface, 0 to 1. Can be driven from game state, for example `distortion={1 - hull}`. Do not put the only copy of critical information behind high distortion.
+- `alert?: 'none' | 'caution' | 'red'` = `'none'`. Tints frame lines and the display edge; `red` pulses at `motion="full"`.
+- `sound?: boolean` = `false`, `volume?: number` = `0.5`. Synthesised interface sound; players should opt in. Set `data-mh-bleep="hover" | "confirm" | "back" | "open" | "error"` on a control to pick its click sound.
+
+While the distortion filter runs, `position: fixed` elements inside your own content are positioned against the provider's direct child.
+
+`useMonohud()` returns `{ theme, motion, alert, container, play }`. `play(name)` plays a bleep.
+
+## Controls
+
+All wrap Base UI and accept the Base UI props of the same component.
+
+- `Button`: `variant?: 'primary' | 'secondary' | 'ghost' | 'danger'` = `'secondary'`, `size?: 'sm' | 'md' | 'lg'` = `'md'`, `loading?: boolean` (keeps focus and width, blocks activation, sets `aria-busy`). Forwards its ref.
+- `Input`: Base UI Input props. Forwards its ref.
+- `Field`: `label?`, `description?`, `error?` (shown on validation failure), `children`. Wraps an `Input`, `Select` or other control.
+- `Form`: Base UI Form.
+- `Checkbox`, `Switch`: Base UI `Checkbox.Root` / `Switch.Root` props. Pass `children` to render a clickable label.
+- `RadioGroup` with `Radio value="..."` children; `Radio` takes its label as `children`.
+- `Slider`: Base UI Slider props for a single number, plus `label?`, `thumbLabel?` (required without `label`), `hideScale?`.
+- `Progress`, `Meter`: Base UI props (`value`, `min`, `max`), plus `label?`, `tone?` = `'accent'`, `hideValue?`, `hideScale?`, and cell options:
+  - `cells?: number | 'auto'` = `'auto'`. `auto` fits cells to the width and lights whole cells only. A number gives a fixed count that fills smoothly through its cells.
+  - `gap?: number` = `2`, pixels between cells.
+  - `cellWidth?: number` = `6`, smallest cell width in `auto`.
+  - `Progress` with `value={null}` is indeterminate.
+
+```tsx
+<Field label="Callsign" description="Shown to your wing">
+  <Input placeholder="VESPER-1" required />
+</Field>
+<Switch defaultChecked>Autopilot</Switch>
+<Slider label="Thrust" defaultValue={40} />
+<Progress label="Jump charge" value={64} cells={12} gap={4} />
+<Meter label="Hull" value={72} tone="warn" />
+```
+
+## Overlays
+
+- `Select<Value>`: `items: { value, label, hint?, disabled? }[]`, `label?`, `placeholder?`, plus Base UI `Select.Root` props (`value`, `defaultValue`, `onValueChange`, ...).
+- `Menu.Root`, `Menu.Trigger`, `Menu.Content` (`align?`, `side?`, `sideOffset?`), `Menu.Item` (`hint?` for a shortcut, `tone?: 'danger'`), `Menu.Separator`.
+- `Dialog.Root`, `Dialog.Trigger`, `Dialog.Content` (`title` required, `description?`, `code?` shown above the title, `tone?: 'danger'`), `Dialog.Actions` (button row), `Dialog.Close`.
+- `Tooltip`: `content`, `side?` = `'top'`, and a single focusable element as `children`.
+- `Tabs.Root`, `Tabs.List` (needs `aria-label`), `Tabs.Tab value`, `Tabs.Panel value`.
+- `useToast()` returns stable `{ toast, close }`. `toast({ title, description?, type?: 'info' | 'ok' | 'warn' | 'danger', timeout? })` returns an id; `timeout: 0` keeps it until closed. It must be called inside `MonohudProvider`.
+
+```tsx
+<Dialog.Root>
+  <Dialog.Trigger render={<Button variant="danger" />}>Abandon mission</Dialog.Trigger>
+  <Dialog.Content tone="danger" title="Abandon this mission?" description="All progress will be lost.">
+    <Dialog.Actions>
+      <Dialog.Close render={<Button variant="ghost" data-mh-bleep="back" />}>Keep playing</Dialog.Close>
+      <Dialog.Close render={<Button variant="danger" />}>Abandon mission</Dialog.Close>
+    </Dialog.Actions>
+  </Dialog.Content>
+</Dialog.Root>
+
+<Menu.Root>
+  <Menu.Trigger render={<Button />}>Options</Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item hint="F5">Quick save</Menu.Item>
+    <Menu.Separator />
+    <Menu.Item tone="danger">Quit mission</Menu.Item>
+  </Menu.Content>
+</Menu.Root>
+
+const { toast } = useToast();
+toast({ title: 'Low fuel', description: 'One jump remaining', type: 'warn' });
+```
+
+## HUD
+
+Each accepts the props of its root element (`div` unless noted).
+
+- `Frame`: chamfered outline. `cut?: number | [topLeft, topRight, bottomRight, bottomLeft]` = `[14, 0, 14, 0]`, `notch?: { offset, width, depth }`, `enter?: boolean` = `true` (line-draw entrance), `enterDelay?: number` (ms, for staggering).
+- `Panel`: a `Frame` with a header. `title?`, `meta?` (right-aligned header data), `footer?: [left, right?]` micro-labels.
+- `DecodeText` (`span`): `text: string`, `duration?`, `delay?`. Text resolves out of noise; screen readers get the final string.
+- `Readout`: `label`, `value`, `unit?`, `note?`, `tone?`, `size?: 'sm' | 'md' | 'lg'` = `'md'`.
+- `Status` (`span`): `tone?: Tone | 'idle'` = `'idle'`, `pulse?` (reserve for conditions needing attention), text as `children`.
+- `Gauge`: `value`, `min?` = 0, `max?` = 100, `label`, `unit?`, `tone?` = `'accent'`, `size?` = 160, `ticks?` = 49.
+- `Radar`: `contacts: { id, bearing (degrees clockwise from north), range (0 centre to 1 rim), kind?: 'hostile' | 'friendly' | 'neutral' | 'target', label, code? }[]`, `label`, `range?` (your units, labels the rings), `onSelect?(contact)`. Contacts are buttons. `radarPoint(bearing, range)` returns `{ x, y }` in percent for overlays such as `Reticle`.
+- `Waveform` (`canvas`): `label`, `amplitude?` = 0.8 (0 to 1), `seed?` = 1.
+- `LogStream` (`ol`): `entries: { id, time, text, level?: 'info' | 'ok' | 'warn' | 'danger' }[]`, `label`.
+- `Reticle`: `locked?` = false, `size?` = 180, `label?`, `note?`.
+- `GridBackground`: `scanlines?` = true.
+
+## Scene
+
+- `Starfield`: WebGL2 deep-space backdrop; plain dark surface without WebGL2. `warp?` = 0 (0 cruising to 1 full warp, eases), `body?` = 0 (planet limb, 0 to 1), `flash?` = 0 (change the value to fire a white-out; only at `motion="full"`). Place it first inside the provider.
+- `Cockpit`: gives `Wing` children depth and a slight lean towards the pointer.
+- `Wing`: `side: 'left' | 'right'`.
+- `TacticalVolume`: stalk radar in perspective. `contacts` are `Radar` contacts plus `elevation?` (-1 below to 1 above the plane), `label`, `range?`, `selected?` (contact id carrying the reticle), `locked?`, `shot?` (change the value to draw a beam to the selected contact), `onSelect?`, `defaultView?: 'tilted' | 'top'` = `'tilted'`. Drag or arrow keys orbit the view.
+- `Hologram` (`canvas`): `model: 'corvette' | 'frigate' | 'freighter' | 'swarm' | { vertices: [x, y, z][], edges: [a, b][] }`, `label`, `integrity?` = 1 (lower breaks up the hull in danger colour).
+- `Tape`: moving-scale instrument. `value`, `label`, `span?` = 90, `step?` = 5, `major?` = 6, `wrap?` (for example 360 for a compass), `vertical?`, `format?: (value) => string`.
+
+```tsx
+<MonohudProvider alert={underFire ? 'red' : 'none'}>
+  <Starfield warp={jumping ? 1 : 0} body={1} flash={arrivals} />
+  <Cockpit>
+    <Wing side="left">
+      <Panel title="Navigation">
+        <Tape label="Heading" value={heading} wrap={360} />
+      </Panel>
+    </Wing>
+    <TacticalVolume contacts={contacts} label="Tactical volume" selected={target} onSelect={(c) => setTarget(c.id)} />
+    <Wing side="right">
+      <Hologram model="corvette" integrity={0.7} label="Target scan" />
+    </Wing>
+  </Cockpit>
+</MonohudProvider>
+```
+
+## Detail primitives
+
+- `Ruler`: `marks?: ReactNode[]`, spaced evenly.
+- `Hatch`: `tone?`, `hazard?` (wider warning stripes).
+- `Barcode`: `value: string`, `showValue?` = true.
+- `Tag` (`span`): `tone?: Tone | 'idle'` = `'idle'`.
+- `DataList` (`dl`): `rows: { label, value, tone? }[]`.
+
+## Without React
+
+`@monohud/css` styles plain markup inside `<div class="mh-root" data-mh-theme="mono" data-mh-motion="full">`, for example `<button class="mh-button mh-cut" data-variant="primary">`. Class names follow the markup `@monohud/react` renders and may change before 1.0.
+
+`@monohud/fx` drives the effects from any framework: `createStarfield(canvas, () => ({ warp, body }))`, `drawTactical`, `drawHologram`, `wireModel(name)`, `framePath`, `createDistortion(filter, root, amount)`, `decode({ text, onFrame })`, `drawWaveform`, `createBleeps()` with `installBleeps(root, bleeps)`, and `motionLevel(element)`.
+
+`@monohud/tokens` exports `palette`, `themes`, `scale`, `fonts` and `renderTokensCss()`, and ships `@monohud/tokens/tokens.css`. Every token is a `--mh-*` variable, such as `--mh-accent`, `--mh-bg-1`, `--mh-line`, `--mh-space-4`, `--mh-cut-sm`.
+
+## Links
+
+- [README](https://github.com/jshguo-labs/monohud#readme): overview, accessibility notes and development
+- [@monohud/react on npm](https://www.npmjs.com/package/@monohud/react)
+- [@monohud/css README](https://github.com/jshguo-labs/monohud/tree/main/packages/css#readme)
+- [@monohud/fx README](https://github.com/jshguo-labs/monohud/tree/main/packages/fx#readme)
+- [@monohud/tokens README](https://github.com/jshguo-labs/monohud/tree/main/packages/tokens#readme)
+- [Base UI](https://base-ui.com): underlying props for controls and overlays
