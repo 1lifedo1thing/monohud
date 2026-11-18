@@ -2,6 +2,8 @@
 
 Sci-fi React components for game and immersive interfaces. Behaviour, keyboard support and accessibility come from [Base UI](https://base-ui.com).
 
+[Live demo — try the cockpit and browse the components](https://jshguo-labs.github.io/monohud/)
+
 ## Install
 
 ```bash
